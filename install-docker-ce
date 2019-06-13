@@ -1,0 +1,28 @@
+---
+# Inserir no campo hosts o IP ou nome da nova VM
+ - hosts: IPSERVIDOR
+   tasks: 
+   - name: Installing necessary packages to docker-ce
+     yum:
+       state: present
+       name:
+        - yum-utils  
+        - device-mapper-persistent-data 
+        - lvm2
+   - name: Upgrade all packages of CentOS
+     yum:
+       name: "*"
+       state: latest
+   - name: Add repository docker-ce
+     get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docker-ce.repo
+     become: yes
+   - name: Installing docker-ce
+     yum:
+       name: docker-ce
+       state: latest
+   - name: Enable docker-ce on startup
+     systemd:
+       state: started
+       name: docker
