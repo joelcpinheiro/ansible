@@ -1,0 +1,15 @@
+---
+# Inserir no campo hosts o IP ou nome da nova VM
+ - hosts: IPSERVER
+   tasks: 
+   - name: Remove packages necessary to docker-ce
+     yum:
+       state: present
+       name:
+        - yum-utils  
+        - device-mapper-persistent-data 
+        - lvm2
+   - name: remove docker.repo
+     shell: rm -rf /etc/yum.repos.d/docker-ce.repo && yum repolist all
+   - name: Remove docker-ce completely
+     shell: yum erase docker-ce -y && rm -rf /etc/docker
