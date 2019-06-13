@@ -1,11 +1,14 @@
 ---
 # Inserir no campo hosts o IP ou nome da nova VM
- - hosts: IPSERVIDOR
-   tasks: 
-   - name: Installing necessary packages to docker-ce
+ - hosts: IPSERVER
+   tasks:
+   - name:
+     shell: systemctl stop firewalld && systemctl disable firewalld
+   - name: Installing necessary packages
      yum:
        state: present
        name:
+        - iptables-services
         - yum-utils  
         - device-mapper-persistent-data 
         - lvm2
@@ -18,6 +21,8 @@
       url: https://download.docker.com/linux/centos/docker-ce.repo
       dest: /etc/yum.repos.d/docker-ce.repo
      become: yes
+   - name: yum repolist
+     shell: yum repolist all
    - name: Installing docker-ce
      yum:
        name: docker-ce
@@ -26,3 +31,8 @@
      systemd:
        state: started
        name: docker
+   - name: Enable iptables-services on startup
+     systemd:
+       name: iptables
+       enabled: yes
+       masked: no
