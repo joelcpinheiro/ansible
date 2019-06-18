@@ -1,6 +1,6 @@
 ---
 # Inserir no campo hosts o IP ou nome da nova VM
- - hosts: IPSERVER
+ - hosts: 192.168.51.17
    tasks:
    - name:
      shell: systemctl stop firewalld && systemctl disable firewalld
@@ -29,10 +29,21 @@
        state: latest
    - name: Enable docker-ce on startup
      systemd:
-       state: started
        name: docker
+       enabled: yes
+       masked: no
    - name: Enable iptables-services on startup
      systemd:
        name: iptables
        enabled: yes
        masked: no
+   - name: Start iptables service
+     systemd:
+       name: iptables
+       state: restarted
+       daemon_reload: yes
+   - name: Start docker service
+     systemd:
+       name: docker
+       state: started
+       enabled: yes
